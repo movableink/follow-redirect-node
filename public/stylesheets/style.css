@@ -1,0 +1,22 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.row{
+	margin:10px 0;
+}
+.url{
+	margin:10px 0;
+}
+.status{
+	margin:10px 0;
+}
+.params{
+	margin:10px 0;
+	font-weight: bold;
+}
