@@ -11,8 +11,11 @@
 
 </head>
 <body>
-	<form action="path/" method="GET">
-			<input type="text" name="url" id="url" />
-	</form>
+	<section style="text-align: center;">
+		<h2>Place URL in the box below and hit enter:</h2>
+		<form action="path/" method="GET" enctype="application/x-www-form-urlencoded">
+				<input type="text" name="sentURL" id="sentURL" />
+		</form>
+	</section>
 </body>
 </html>

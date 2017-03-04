@@ -1,14 +1,28 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background:#eee;
 }
 
 a {
   color: #00B7FF;
 }
+section{
+	width:960px;
+	margin:0 auto;
+}
+input{
+	width:400px;
+	height:50px;
+	font-size:24px;
+}
 
 .row{
 	margin:10px 0;
+	border-bottom:1px solid black;
+}
+.row:last-child{
+	border: none;
 }
 .url{
 	margin:10px 0;
@@ -19,4 +33,8 @@ a {
 .params{
 	margin:10px 0;
 	font-weight: bold;
+}
+.params h2{
+	font-size:15px;
+	margin:0 0 2px;
 }

@@ -6,8 +6,7 @@ var https        = require('https');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 
-	var url = req.query.url || null;
-
+	var url = req.query.sentURL || null;
 	if(url){
 		traceURL(url, req, res);
 	}else{
@@ -27,8 +26,7 @@ function traceURL(url, req, res){
     function get(url) {
       var regex = /https:/gi;
       var h = http;
-      if(regex.exec(url)) h = https;
-
+      if(regex.exec(url)) { h = https; }
       h.get(url, (response) => {
 
         response.on('data', () =>{
@@ -43,7 +41,6 @@ function traceURL(url, req, res){
           status : response.statusCode,
           url : url
         };
-
         json.responses.push(data);
 
         if(response.statusCode === 200){
