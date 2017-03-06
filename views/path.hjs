@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ title }}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel='stylesheet' href='/stylesheets/style.css' media="screen"/>
+
+	<link rel="shortcut icon" href="/images/app/favicon.ico" type="image/x-icon" />
+	<link rel="apple-touch-icon" href="/images/app/ios-icon.png">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready( () => {
+			var response = {{& response}};
+			console.log(response)
+
+			if(response.responses.length){
+				urlResponse(response.responses);
+			}
+
+		});
+
+		function urlResponse(response){
+			
+			$.each(response, (i, v) => {
+				var url = v.url;
+				var query = url.split('?');
+				var params = '';
+
+				if(query[1]){
+					params = query[1].split('&').join('<br />');
+				}
+
+				var html = [
+
+					'<div class="row">',
+						'<div class="status">',
+						'Redirect Status: ' + v.status,
+						'</div>',
+						'<div class="url">',
+						'URL: ' + url,
+						'</div>',
+						'<div class="params"><h2>Params:</h2>',
+							params,
+						'</div>',
+					'</div>'
+
+				].join('');
+				$('section').append(html);
+
+			});
+
+		}
+
+	</script>
+
+</head>
+<body>
+
+	<section></section>
+	<pre>{{ errorMsg }}</pre>
+
+</body>
+</html>
