@@ -7,11 +7,8 @@ var https        = require('https');
 router.get('/', function(req, res, next) {
 
 	var url = req.query.sentURL || null;
-	if(url){
-		traceURL(url, req, res);
-	}else{
-		noURL(res)
-	}
+	console.log(url);
+	(url) ? traceURL(url, req, res) : noURL(res);
 
 });
 
@@ -36,10 +33,11 @@ function traceURL(url, req, res){
         response.on('end', () => {
           // console.log('end');
         });
-
+        var urlType = determineURLType(url);
         var data = {
           status : response.statusCode,
-          url : url
+          url : url,
+          urlType : urlType
         };
         json.responses.push(data);
 
@@ -85,4 +83,30 @@ function noURL(res){
 
 }
 
+function determineURLType(url){
+  var path = url.split('?')[0];
+  path = path.split('.com/')[1];
+
+  if(path && path.substring(1,4) === '/cp' && path.substr(-2) == '/c'){
+    path = 'tracks the click at the campaign level';
+  } else if(path && path.substring(1,4) === '/cp' && path.substr(-2) == '/r'){
+    path = 'sets the user cookies and finds the block level redirect';
+  } else if(path && path.substring(1,4) === '/rp' && path.substr(-4) == '/url') {
+    path = 'tracks the click at the block level';
+  } else {
+    path = '';
+  }
+
+  return path;
+}
+
 module.exports = router;
+
+/*
+*
+* @claire, using this link: http://www.movable-ink-2183.com/p/cp/fc882df30ce19283/c?mi_u=$$ENCRYPTED_USER_ID$$&mi_name=%%firstname%%&mi_zip_default=%%zip%%&mi_country_code=US&url=http%3A%2F%2Fwww.movable-ink-2183.com%2Fp%2Frp%2Fbf1d805feed4ef5a%2Furl
+ The first redirect includes /cp and ends with /c —> tracks the click at the campaign level
+ The second redirect includes /cp and ends with /r —> sets the user cookies and finds the block level redirect
+ The third redirect includes /rp and ends with /url —> tracks the click at the block level
+ The fourth redirect goes to the client’s site
+* */

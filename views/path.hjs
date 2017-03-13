@@ -20,6 +20,11 @@
 
 		});
 
+		function displayMessage(response){
+		  console.dir(response);
+			$('section').html('sdfs');
+    }
+
 		function urlResponse(response){
 			
 			$.each(response, (i, v) => {
@@ -31,11 +36,24 @@
 					params = query[1].split('&').join('<br />');
 				}
 
-				var html = [
+        var html = [
+          '<div class="row">',
+          '<div class="status">',
+          'Redirect Status: ' + v.status + ' - <span>' + v.urlType + '</span>',
+          '</div>',
+          '<div class="url">',
+          'URL: ' + url,
+          '</div>',
+          '</div>'
+        ].join('');
+				
 
+				if (v.urlType === 'tracks the click at the block level'){
+
+				html = [
 					'<div class="row">',
 						'<div class="status">',
-						'Redirect Status: ' + v.status,
+						'Redirect Status: ' + v.status + ' - <span>' + v.urlType + '</span>',
 						'</div>',
 						'<div class="url">',
 						'URL: ' + url,
@@ -44,8 +62,10 @@
 							params,
 						'</div>',
 					'</div>'
-
 				].join('');
+
+        }
+
 				$('section').append(html);
 
 			});

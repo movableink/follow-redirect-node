@@ -17,6 +17,10 @@ input{
 	font-size:24px;
 }
 
+h2 {
+	margin-top: 40px;
+}
+
 .row{
 	margin:10px 0;
 	border-bottom:1px solid black;
@@ -37,4 +41,8 @@ input{
 .params h2{
 	font-size:15px;
 	margin:0 0 2px;
+}
+span{
+	font-weight: bold;
+	color: red;
 }
