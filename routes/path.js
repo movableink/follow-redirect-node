@@ -14,7 +14,9 @@ router.get('/', function(req, res, next) {
 
 function traceURL(url, req, res){
 
-	return new Promise(function(resolve, reject){
+  var imageUrl = req.query.imageURL;
+
+  return new Promise(function(resolve, reject){
     //The response object to return
     var json = {
       responses : []
@@ -26,18 +28,20 @@ function traceURL(url, req, res){
       if(regex.exec(url)) { h = https; }
       h.get(url, (response) => {
 
-        response.on('data', () =>{
-          // console.log('data'); 
-        });
+        // response.on('data', () =>{
+        //   // console.log('data');
+        // });
+        //
+        // response.on('end', () => {
+        //   // console.log('end');
+        // });
 
-        response.on('end', () => {
-          // console.log('end');
-        });
         var urlType = determineURLType(url);
         var data = {
           status : response.statusCode,
           url : url,
-          urlType : urlType
+          urlType : urlType,
+          imageUrl : imageUrl
         };
         json.responses.push(data);
 

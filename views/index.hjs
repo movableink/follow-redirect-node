@@ -14,8 +14,12 @@
 <section style="text-align: center;">
 
   <form action="path/" method="GET" enctype="application/x-www-form-urlencoded">
-    <h2>Place URL in the box below and hit enter:</h2>
+    <h2>Paste <span>link</span> URL in the box below:</h2>
     <input type="text" name="sentURL" id="sentURL"/>
+    <h2>Paste <span>image</span> URL in the box below:</h2>
+    <input type="text" name="imageURL" id="imageURL"/>
+    <br><br><br>
+    <input type="submit">
   </form>
 
 </section>
