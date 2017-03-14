@@ -34,13 +34,28 @@ h2 {
 .status{
 	margin:10px 0;
 }
-.params{
-	margin:10px 0;
-	font-weight: bold;
+.row{
+
 }
-.params h2{
+.row h2{
 	font-size:15px;
 	margin:0 0 2px;
+}
+.row:after{
+	content: " "; 
+	visibility: hidden; 
+	display: block; 
+	height: 0; 
+	clear: both;
+}
+.params{
+	float:left;
+	margin:10px 0;
+	font-weight: bold;
+	width:50%;
+}
+.params .red{
+	color: red;
 }
 span{
 	font-weight: bold;

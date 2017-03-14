@@ -28,14 +28,6 @@ function traceURL(url, req, res){
       if(regex.exec(url)) { h = https; }
       h.get(url, (response) => {
 
-        // response.on('data', () =>{
-        //   // console.log('data');
-        // });
-        //
-        // response.on('end', () => {
-        //   // console.log('end');
-        // });
-
         var urlType = determineURLType(url);
         var data = {
           status : response.statusCode,
