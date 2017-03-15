@@ -13,6 +13,7 @@ function urlResponse(response){
       urlParams = compareObjects(urlParams, imageParams);
 
       paramHtml = [
+        '<div class="url"><b>Image URL</b>: <div>' + v.imageUrl + '</div></div>',
         '<div class="row">',
           '<div class="params"><h2>Params:</h2>',
           buildParams(urlParams),
@@ -31,7 +32,7 @@ function urlResponse(response){
       'Redirect Status: ' + v.status + ' - <span>' + v.urlType + '</span>',
       '</div>',
       '<div class="url">',
-      'URL: ' + url,
+      '<b>URL</b>: <div>' + url + '</div>',
       '</div>',
       paramHtml,
       '</div>'

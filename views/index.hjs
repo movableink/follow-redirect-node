@@ -14,13 +14,16 @@
 <section style="text-align: center;">
 
   <form action="path/" method="GET" enctype="application/x-www-form-urlencoded">
-    <h2>Paste <span>link</span> URL in the box below:</h2>
+    <p>Paste <span>link</span> URL in the box below:</p>
     <input type="text" name="sentURL" id="sentURL"/>
-    <h2>Paste <span>image</span> URL in the box below:</h2>
+    <p>Paste <span>image</span> URL in the box below:</p>
     <input type="text" name="imageURL" id="imageURL"/>
-    <br><br><br>
-    <input type="submit">
+    <input class="button" type="submit" value="Trace">
   </form>
+
+  <div class="blurb">
+
+  </div>
 
 </section>
 </body>
