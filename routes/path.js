@@ -35,6 +35,7 @@ function traceURL(url, req, res){
           urlType : urlType,
           imageUrl : imageUrl
         };
+
         json.responses.push(data);
 
         if(response.statusCode === 200){
@@ -46,12 +47,24 @@ function traceURL(url, req, res){
 
       }).on('error', function(err){
   	    console.error(err);
-        reject({error : err});
+        
+        json.responses.push({
+          status : 'Error with URL',
+          url : url,
+          urlType : '',
+          imageUrl : imageUrl
+        });
+
+        done(json, res);
+        // reject({error : err});
   	  });
     }
 
     get(url);
 
+  }).catch((error) => {
+    assert.isNotOk(error,'Promise error');
+    done(json, res);
   });
 
 }

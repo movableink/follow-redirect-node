@@ -85,6 +85,9 @@ h2 {
 .params .red{
 	color: red;
 }
+.params .green{
+	color: #77dd77;
+}
 span{
 	font-weight: bold;
 	color: #d8367f;
