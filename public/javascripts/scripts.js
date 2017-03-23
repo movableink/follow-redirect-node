@@ -79,7 +79,9 @@ function compareObjects(url, image){
 
     if( !image.hasOwnProperty(i) || image[i]['value'] !== url[i]['value'] ){
       url[i]['red'] = true;
-    };
+    }else{
+      url[i]['red'] = false;
+    }
 
   }); 
 
@@ -94,10 +96,12 @@ function buildParams(object){
   var html = '';
   $.each(object, (i, v) => {
 
-    if(v.red){
+    if(!v.hasOwnProperty('red')){
+      html += '<div>' + i + '=' + v.value + '</div>';
+    }else if(v.red){
       html += '<div class="red">' + i + '=' + v.value + '</div>';
     }else{
-      html += '<div>' + i + '=' + v.value + '</div>';
+      html += '<div class="green">' + i + '=' + v.value + '</div>';
     }
 
   });
