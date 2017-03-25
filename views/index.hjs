@@ -18,6 +18,11 @@
     <input type="text" name="sentURL" id="sentURL"/>
     <p>Paste <span>image</span> URL in the box below:</p>
     <input type="text" name="imageURL" id="imageURL"/>
+    <p class="device">Select device type</p>
+    <select name="agentType">
+      <option value="desktop">Desktop</option>
+      <option value="mobile">Mobile</option>
+    </select>
     <input class="button" type="submit" value="Trace">
   </form>
 
