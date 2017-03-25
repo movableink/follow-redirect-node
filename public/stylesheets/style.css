@@ -36,13 +36,19 @@ input{
 	display: block;
 	margin:0 auto;
 }
+select{
+	width:300px;
+	text-indent:120px;
+}
 p{
 	font-size:20px;
+}
+p.device{
+	margin-bottom:5px;
 }
 h2 {
 	margin-top: 40px;
 }
-
 .row{
 	margin:10px 0;
 	border-bottom:1px solid black;
@@ -91,4 +97,31 @@ h2 {
 span{
 	font-weight: bold;
 	color: #d8367f;
+}
+
+/*
+	Mobile Design
+*/
+@media screen and (max-height: 450px), screen and (max-width: 800px){
+	body{
+		padding:0;
+	}
+	section{
+		width:100%;
+	}
+	input{
+		width:300px;
+	}
+	select{
+		width:200px;
+		text-indent:75px;
+	}
+	.params{
+		float:none;
+		width:100%;
+	}
+	.params:first-child{
+		margin-right:0;
+	}
+
 }

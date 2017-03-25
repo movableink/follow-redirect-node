@@ -1,20 +1,26 @@
-var express = require('express');
-var router = express.Router();
-var http         = require('http');
-var https        = require('https');
+var express       = require('express');
+var router        = express.Router();
+var http          = require('http');
+var https         = require('https');
+var urls          = require('url');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 
 	var url = req.query.sentURL || null;
-	console.log(url);
-	(url) ? traceURL(url, req, res) : noURL(res);
+	
+  if(url){
+    traceURL(url, req, res)
+  }else{
+    noURL(res);
+  }
 
 });
 
 function traceURL(url, req, res){
 
-  var imageUrl = req.query.imageURL;
+  var imageUrl    = req.query.imageURL;
+  var userAgent   = getUserAgent(req.query.agentType);
 
   return new Promise(function(resolve, reject){
     //The response object to return
@@ -23,10 +29,15 @@ function traceURL(url, req, res){
     };
 
     function get(url) {
-      var regex = /https:/gi;
-      var h = http;
-      if(regex.exec(url)) { h = https; }
-      h.get(url, (response) => {
+      
+      var h = (url.indexOf('https:') > -1) ? https : http;
+
+      var options = urls.parse(url);
+      options.headers = {
+        'User-Agent' : userAgent
+      }
+
+      h.get(options, (response) => {
 
         var urlType = determineURLType(url);
         var data = {
@@ -39,7 +50,6 @@ function traceURL(url, req, res){
         json.responses.push(data);
 
         if(response.statusCode === 200){
-          // resolve(json);
           done(json, res);
         } else {
           get(response.headers.location);
@@ -56,7 +66,6 @@ function traceURL(url, req, res){
         });
 
         done(json, res);
-        // reject({error : err});
   	  });
     }
 
@@ -107,6 +116,16 @@ function determineURLType(url){
   }
 
   return path;
+}
+
+function getUserAgent(agentType){
+
+  if(agentType === 'desktop'){
+    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14';
+  }else{
+    return 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_1_1 like Mac OS X) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0 Mobile/14B100 Safari/602.1';
+  }
+
 }
 
 module.exports = router;
