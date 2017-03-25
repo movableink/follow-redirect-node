@@ -37,8 +37,8 @@ input{
 	margin:0 auto;
 }
 select{
-	width:300px;
-	text-indent:120px;
+	width:400px;
+	text-indent:170px;
 }
 p{
 	font-size:20px;
@@ -113,8 +113,8 @@ span{
 		width:300px;
 	}
 	select{
-		width:200px;
-		text-indent:75px;
+		width:300px;
+		text-indent:125px;
 	}
 	.params{
 		float:none;
@@ -122,6 +122,9 @@ span{
 	}
 	.params:first-child{
 		margin-right:0;
+	}
+	.button{
+		-webkit-appearance: none;
 	}
 
 }
