@@ -30,6 +30,7 @@ function traceURL(url, req, res){
 
     function get(url) {
       
+      url = (url) ? url : '';
       var h = (url.indexOf('https:') > -1) ? https : http;
 
       var options = urls.parse(url);
