@@ -6,7 +6,6 @@ function urlResponse(response){
     var paramHtml = '';
 
     if(v.urlType === 'tracks the click at the block level'){
-
       var urlParams = splitParam(url);
       var imageParams = splitParam(v.imageUrl);
 
