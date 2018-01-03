@@ -74,9 +74,11 @@ function splitParam(url){
 */
 function compareObjects(url, image){
 
+  var globalIgnoreParam = ["utm_source","utm_medium","utm_term","utm_content","utm_id","utm_campaign","gclid","om_rid","om_mid","om_lid","cellid","ECID","mi_link_position","mi_cachebuster"];
+
   $.each(url, (i,v) => {
 
-    if( !image.hasOwnProperty(i) || image[i]['value'] !== url[i]['value'] ){
+    if( globalIgnoreParam.indexOf(i) < 0 && (!image.hasOwnProperty(i) || image[i]['value'] !== url[i]['value']) ){
       url[i]['red'] = true;
     }else{
       url[i]['red'] = false;
