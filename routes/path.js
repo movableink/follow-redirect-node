@@ -132,12 +132,3 @@ function getUserAgent(agentType){
 }
 
 module.exports = router;
-
-/*
- *
- * @claire, using this link: http://www.movable-ink-2183.com/p/cp/fc882df30ce19283/c?mi_u=$$ENCRYPTED_USER_ID$$&mi_name=%%firstname%%&mi_zip_default=%%zip%%&mi_country_code=US&url=http%3A%2F%2Fwww.movable-ink-2183.com%2Fp%2Frp%2Fbf1d805feed4ef5a%2Furl
- The first redirect includes /cp and ends with /c —> tracks the click at the campaign level
- The second redirect includes /cp and ends with /r —> sets the user cookies and finds the block level redirect
- The third redirect includes /rp and ends with /url —> tracks the click at the block level
- The fourth redirect goes to the client’s site
- * */
