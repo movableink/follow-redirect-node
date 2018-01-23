@@ -17,6 +17,7 @@ router.get('/', function(req, res, next){
 
 });
 
+
 function traceURL(url, req, res){
 
   var imageUrl  = req.query.imageURL;
@@ -30,7 +31,7 @@ function traceURL(url, req, res){
 
     function get(url){
 
-      url   = (url) ? url : '';
+      url   = (!!url) ? url : '';
       var h = (url.indexOf('https:') > -1) ? https : http;
 
       var options     = urls.parse(url);
@@ -47,6 +48,7 @@ function traceURL(url, req, res){
           urlType  : urlType,
           imageUrl : imageUrl
         };
+
 
         json.responses.push(data);
 
@@ -80,7 +82,6 @@ function traceURL(url, req, res){
 }
 
 function done(json, res){
-
   res.render('path',
     {
       title    : 'Redirect Tracker',
