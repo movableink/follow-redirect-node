@@ -29,6 +29,8 @@ function traceURL(url, req, res){
       responses : []
     };
 
+    setTimeout(() => reject('Site Timed Out'), 8000);
+
     function get(url){
 
       url   = (!!url) ? url : '';
