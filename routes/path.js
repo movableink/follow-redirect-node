@@ -29,8 +29,6 @@ function traceURL(url, req, res){
       responses : []
     };
 
-    setTimeout(() => reject('Site Timed Out'), 8000);
-
     function get(url){
 
       url   = (!!url) ? url : '';
@@ -41,7 +39,14 @@ function traceURL(url, req, res){
         'User-Agent' : userAgent
       };
 
-      h.get(options, (response) =>{
+      // if we cannot connect
+      const timeout = setTimeout(() =>{
+        client.abort();
+      }, 8000);
+
+      const client = h.get(options, (response) =>{
+
+        clearTimeout(timeout);
 
         var urlType = determineURLType(url);
         var data    = {
@@ -50,7 +55,6 @@ function traceURL(url, req, res){
           urlType  : urlType,
           imageUrl : imageUrl
         };
-
 
         json.responses.push(data);
 
@@ -72,6 +76,13 @@ function traceURL(url, req, res){
 
         done(json, res);
       });
+
+      // if the client's site times out
+      client.setTimeout(8000, ()=>{
+        clearTimeout(timeout);
+        client.abort();
+      });
+      return client;
     }
 
     get(url);
@@ -122,7 +133,6 @@ function determineURLType(url){
   }
   return msg;
 }
-
 
 function getUserAgent(agentType){
 
