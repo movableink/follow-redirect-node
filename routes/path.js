@@ -39,10 +39,7 @@ function traceURL(url, req, res){
         'User-Agent' : userAgent
       };
 
-      // if we cannot connect
-      const timeout = setTimeout(() =>{
-        client.abort();
-      }, 8000);
+
 
       const client = h.get(options, (response) =>{
 
@@ -64,6 +61,8 @@ function traceURL(url, req, res){
           get(response.headers.location);
         }
 
+      }).on('abort', function(){
+        client.close()
       }).on('error', function(err){
         console.error(err);
 
@@ -82,13 +81,21 @@ function traceURL(url, req, res){
         clearTimeout(timeout);
         client.abort();
       });
+
+
       return client;
     }
+
+    // if we cannot connect
+    let timeout = setTimeout(function() {
+      cannotConnect(res, url);
+    }, 8000);
+
 
     get(url);
 
   }).catch((error) =>{
-    assert.isNotOk(error, 'Promise error');
+    console.error('Promise Error: ' + error);
     done(json, res);
   });
 
@@ -100,6 +107,18 @@ function done(json, res){
       title    : 'Redirect Tracker',
       response : JSON.stringify(json),
       errorMsg : null
+    }
+  );
+
+}
+
+
+function cannotConnect(res, h){
+
+  res.render('path', {
+      title    : 'Redirect Tracker',
+      url      : '',
+      errorMsg : 'Cannot connect to url. Please check link: ' + h
     }
   );
 

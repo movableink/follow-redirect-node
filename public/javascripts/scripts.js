@@ -72,9 +72,9 @@ function checkCampaignIdsAreSame(linkUrl, imgUrl){
   }
 }
 
-function getCampaignId(path, str1, str2){
+function getCampaignId(path, str1='', str2=''){
   let campaignIdArr = (!!path) ? path.split(str1) : '';
-  return (!!campaignIdArr) ? campaignIdArr[1].split(str2)[0] : '';
+  return (!!campaignIdArr && campaignIdArr[1]) ? campaignIdArr[1].split(str2)[0] : '';
 }
 
 /*
