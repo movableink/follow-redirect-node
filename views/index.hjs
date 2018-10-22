@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel='stylesheet' href='/stylesheets/style.css' media="screen"/>
 
-  <link rel="shortcut icon" href="/images/app/favicon.ico" type="image/x-icon"/>
-  <link rel="apple-touch-icon" href="/images/app/ios-icon.png">
+  {{!-- <link rel="shortcut icon" href="/images/app/favicon.ico" type="image/x-icon"/> --}}
+  {{!-- <link rel="apple-touch-icon" href="/images/app/ios-icon.png"> --}}
 
 </head>
 <body>
