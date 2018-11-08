@@ -129,7 +129,8 @@ function noURL(res){
   res.render('path', {
       title    : 'Redirect Tracker',
       url      : '',
-      errorMsg : 'No URL provided'
+      errorMsg : 'No URL provided',
+      response : JSON.stringify({})
     }
   );
 
