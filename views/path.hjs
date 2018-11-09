@@ -13,7 +13,7 @@
     <script type="text/javascript">
       $(document).ready(() => {
 
-        var response = {{response}};
+        var response = {{& response}};
         if(response.hasOwnProperty('responses') && response.responses.length){
           urlResponse(response.responses);
         }
