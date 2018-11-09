@@ -61,9 +61,9 @@ function traceURL(url, req, res){
           get(response.headers.location);
         }
 
-      }).on('abort', function(){
+      }).on('abort', ()=>{
         client.close()
-      }).on('error', function(err){
+      }).on('error', (err)=>{
         console.error(err);
 
         json.responses.push({
