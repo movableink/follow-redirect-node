@@ -9,7 +9,6 @@ const fetch = require("node-fetch");
  */
 const log = require("../utils/log");
 
-let TRACE_RESULTS = [];
 const router = express.Router();
 
 router.get("/", async function(req, res) {
@@ -44,47 +43,53 @@ router.get("/", async function(req, res) {
   }
 });
 
-function traceURL({ linkURL, imageURL, userAgent }) {
-  return new Promise(async (resolve, reject) => {
-    const { response, error } = await trace(linkURL, userAgent);
-    const { status, headers } = response;
+/**
+ *
+ * @param {*} props
+ */
+async function traceURL(props) {
+  const traceLimit = 10;
+  let totalTracesDone = 0;
+  let traceResults = [];
 
-    // sets global
-    TRACE_RESULTS.push({
-      status: status,
+  async function _traceURL({ linkURL, imageURL, userAgent }) {
+    const { nextUrl, status, error } = await trace(linkURL, userAgent);
+
+    // increment to match limit
+    totalTracesDone++;
+
+    // bail early
+    if (error) {
+      return traceResults;
+    }
+
+    // store result of trace
+    traceResults.push({
+      status,
       url: linkURL,
-      urlType: determineURLType(linkURL),
+      urlType: getURLType(linkURL),
       imageUrl: imageURL
     });
 
-    log(status, "response status");
-    log(headers.get("location"), "response headers");
-
-    if (error || status > 400) {
-      log(error);
-      return reject(error);
+    // if nextUrl a redirect was found so trace again
+    if (nextUrl && totalTracesDone < traceLimit) {
+      return await _traceURL({ linkURL: nextUrl, imageURL, userAgent });
     }
 
-    if (status === 302 || status === 301) {
-      return resolve(
-        traceURL({
-          linkURL: headers.get("location"),
-          imageURL,
-          userAgent
-        })
-      );
-    }
+    return traceResults;
+  }
 
-    if (status === 200) {
-      resolve(TRACE_RESULTS);
-      // clears global
-      TRACE_RESULTS = [];
-    }
-  });
+  return await _traceURL(props);
 }
 
+/**
+ *
+ * @param {*} linkURL
+ * @param {*} userAgent
+ */
 async function trace(linkURL, userAgent) {
   try {
+    let nextUrl = null;
     const response = await fetch(linkURL, {
       headers: {
         "User-Agent": userAgent
@@ -92,17 +97,36 @@ async function trace(linkURL, userAgent) {
       redirect: "manual", // `follow, `manual`, `error`
       timeout: 8000 // 8 sec
     });
+    const { status, headers } = response;
+
+    log(status, "status");
+    log(headers.get("location"), "next url");
+
+    if (status > 400) {
+      throw new Error("status above 400");
+    }
+
+    if (status === 302 || status === 301) {
+      nextUrl = headers.get("location");
+    }
+
     return {
-      response
+      status,
+      nextUrl
     };
   } catch (error) {
+    log(error);
     return {
       error
     };
   }
 }
 
-function determineURLType(url) {
+/**
+ *
+ * @param {*} url
+ */
+function getURLType(url) {
   var path = url.split("?")[0];
   path = path.split(".com/")[1];
   var msg = "";
@@ -120,6 +144,10 @@ function determineURLType(url) {
   return msg;
 }
 
+/**
+ *
+ * @param {*} agentType
+ */
 function getUserAgent(agentType) {
   if (agentType === "desktop") {
     return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14";
