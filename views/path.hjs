@@ -12,12 +12,10 @@
     <script type="text/javascript" src="/javascripts/scripts.js"></script>
     <script type="text/javascript">
       $(document).ready(() => {
-
         var response = {{& response}};
-        if(response.hasOwnProperty('responses') && response.responses.length){
-          urlResponse(response.responses);
+        if(response.length){
+          urlResponse(response);
         }
-
       });
     </script>
 

@@ -82,7 +82,7 @@ function getCampaignId(path, str1='', str2=''){
 */
 function splitParam(url){
 
-  var query  = url.split('?');
+  var query  = (url + '').split('?');
   var object = {};
   var params = '';
 

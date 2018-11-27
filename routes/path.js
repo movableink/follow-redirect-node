@@ -1,167 +1,131 @@
-var express = require('express');
-var router  = express.Router();
-var http    = require('http');
-var https   = require('https');
-var urls    = require('url');
+/**
+ * External dependencies
+ */
+const express = require("express");
+const fetch = require("node-fetch");
 
-/* GET users listing. */
-router.get('/', function(req, res, next){
+/**
+ * Internal dependencies
+ */
+const log = require("../utils/log");
 
-  var url = req.query.sentURL || null;
+let TRACE_RESULTS = [];
+const router = express.Router();
 
-  if(url){
-    traceURL(url, req, res)
-  } else{
-    noURL(res);
+router.get("/", async function(req, res) {
+  try {
+    const { sentURL, imageURL, agentType } = req.query;
+    const userAgent = getUserAgent(agentType);
+
+    if (!sentURL) {
+      throw new Error("No URL provided");
+    }
+
+    const traceURLResults = await traceURL({
+      linkURL: sentURL,
+      imageURL: imageURL,
+      userAgent: userAgent
+    });
+
+    res.render("path", {
+      title: "Redirect Tracker",
+      url: "",
+      errorMsg: null,
+      response: JSON.stringify(traceURLResults || [])
+    });
+  } catch (error) {
+    log(error);
+    res.render("path", {
+      title: "Redirect Tracker",
+      url: "",
+      errorMsg: error.message,
+      response: JSON.stringify([])
+    });
   }
-
 });
 
+function traceURL({ linkURL, imageURL, userAgent }) {
+  return new Promise(async (resolve, reject) => {
+    const { response, error } = await trace(linkURL, userAgent);
+    const { status, headers } = response;
 
-function traceURL(url, req, res){
+    // sets global
+    TRACE_RESULTS.push({
+      status: status,
+      url: linkURL,
+      urlType: determineURLType(linkURL),
+      imageUrl: imageURL
+    });
 
-  var imageUrl  = req.query.imageURL;
-  var userAgent = getUserAgent(req.query.agentType);
+    log(status, "response status");
+    log(headers.get("location"), "response headers");
 
-  return new Promise(function(resolve, reject){
-    //The response object to return
-    var json = {
-      responses : []
-    };
-
-    function get(url){
-
-      url   = (!!url) ? url : '';
-      var h = (url.indexOf('https:') > -1) ? https : http;
-
-      var options     = urls.parse(url);
-      options.headers = {
-        'User-Agent' : userAgent
-      };
-
-
-
-      const client = h.get(options, (response) =>{
-
-        clearTimeout(timeout);
-
-        var urlType = determineURLType(url);
-        var data    = {
-          status   : response.statusCode,
-          url      : url,
-          urlType  : urlType,
-          imageUrl : imageUrl
-        };
-
-        json.responses.push(data);
-
-        if(response.statusCode === 200){
-          done(json, res);
-        } else{
-          get(response.headers.location);
-        }
-
-      }).on('abort', ()=>{
-        client.close()
-      }).on('error', (err)=>{
-        console.error(err);
-
-        json.responses.push({
-          status   : 'Error with URL',
-          url      : url,
-          urlType  : '',
-          imageUrl : imageUrl
-        });
-
-        done(json, res);
-      });
-
-      // if the client's site times out
-      client.setTimeout(8000, ()=>{
-        clearTimeout(timeout);
-        client.abort();
-      });
-
-
-      return client;
+    if (error || status > 400) {
+      log(error);
+      return reject(error);
     }
 
-    // if we cannot connect
-    let timeout = setTimeout(function() {
-      cannotConnect(res, url);
-    }, 8000);
+    if (status === 302 || status === 301) {
+      return resolve(
+        traceURL({
+          linkURL: headers.get("location"),
+          imageURL,
+          userAgent
+        })
+      );
+    }
 
-
-    get(url);
-
-  }).catch((error) =>{
-    console.error('Promise Error: ' + error);
-    done(json, res);
+    if (status === 200) {
+      resolve(TRACE_RESULTS);
+      // clears global
+      TRACE_RESULTS = [];
+    }
   });
-
 }
 
-function done(json, res){
-  res.render('path',
-    {
-      title    : 'Redirect Tracker',
-      response : JSON.stringify(json),
-      errorMsg : null
-    }
-  );
-
+async function trace(linkURL, userAgent) {
+  try {
+    const response = await fetch(linkURL, {
+      headers: {
+        "User-Agent": userAgent
+      },
+      redirect: "manual", // `follow, `manual`, `error`
+      timeout: 8000 // 8 sec
+    });
+    return {
+      response
+    };
+  } catch (error) {
+    return {
+      error
+    };
+  }
 }
 
+function determineURLType(url) {
+  var path = url.split("?")[0];
+  path = path.split(".com/")[1];
+  var msg = "";
 
-function cannotConnect(res, h){
-
-  res.render('path', {
-      title    : 'Redirect Tracker',
-      url      : '',
-      errorMsg : 'Cannot connect to url. Please check link: ' + h
-    }
-  );
-
-}
-
-function noURL(res){
-
-  res.render('path', {
-      title    : 'Redirect Tracker',
-      url      : '',
-      errorMsg : 'No URL provided',
-      response : JSON.stringify({})
-    }
-  );
-
-}
-
-function determineURLType(url){
-  var path = url.split('?')[0];
-  path     = path.split('.com/')[1];
-  var msg  = '';
-
-  if(path){
+  if (path) {
     let valToCompare = path.substring(1, 4);
-    if(valToCompare === '/cp' && path.substr(-2) == '/c'){
-      msg = 'tracks the click at the campaign level';
-    } else if(valToCompare === '/cp' && path.substr(-2) == '/r'){
-      msg = 'sets the user cookies and finds the block level redirect';
-    } else if(valToCompare === '/rp' && path.substr(-4) == '/url'){
-      msg = 'tracks the click at the block level';
+    if (valToCompare === "/cp" && path.substr(-2) == "/c") {
+      msg = "tracks the click at the campaign level";
+    } else if (valToCompare === "/cp" && path.substr(-2) == "/r") {
+      msg = "sets the user cookies and finds the block level redirect";
+    } else if (valToCompare === "/rp" && path.substr(-4) == "/url") {
+      msg = "tracks the click at the block level";
     }
   }
   return msg;
 }
 
-function getUserAgent(agentType){
-
-  if(agentType === 'desktop'){
-    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14';
-  } else{
-    return 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_1_1 like Mac OS X) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0 Mobile/14B100 Safari/602.1';
+function getUserAgent(agentType) {
+  if (agentType === "desktop") {
+    return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14";
+  } else {
+    return "Mozilla/5.0 (iPhone; CPU iPhone OS 10_1_1 like Mac OS X) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0 Mobile/14B100 Safari/602.1";
   }
-
 }
 
 module.exports = router;

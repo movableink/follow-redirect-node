@@ -50,21 +50,16 @@ h2 {
 	margin-top: 40px;
 }
 .row{
-	margin:10px 0;
-	border-bottom:1px solid black;
+	margin: 10px 0 30px 0;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  padding: 10px;
 }
-.row:last-child{
+
+.row .row{
 	border: none;
 }
-.url{
-	margin:10px 0;
-}
-.status{
-	margin:10px 0;
-}
-.row{
 
-}
 .row h2{
 	font-size:15px;
 	margin:0 0 2px;
@@ -76,11 +71,29 @@ h2 {
 	height: 0; 
 	clear: both;
 }
-.params{
-	float:left;
+
+.url{
 	margin:10px 0;
-	font-weight: bold;
-	width:49%;
+}
+.status{
+	margin: 10px 0;
+  background: #c3c3c3;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  display: inline-block;
+  font-size: 12px;
+  border: 1px solid #b1b1b1;
+}
+
+.params{
+	float: left;
+  margin: 10px 0;
+  font-weight: bold;
+  width: 46%;
+  background: #f7f7f7;
+  padding: 10px;
+  border: 1px solid #eee;
 }
 .params:first-child{
 	margin-right:2%;

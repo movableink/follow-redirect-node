@@ -1,6 +1,6 @@
 {
   "name": "follow-redirect-node",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
@@ -13,7 +13,8 @@
     "express": "4.16.4",
     "morgan": "1.9.1",
     "serve-favicon": "2.5.0",
-    "hjs": "0.0.6"
+    "hjs": "0.0.6",
+    "node-fetch": "2.3.0"
   },
   "devDependencies": {
     "nodemon": "1.18.6"
