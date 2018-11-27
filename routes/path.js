@@ -48,7 +48,7 @@ router.get("/", async function(req, res) {
  * @param {*} props
  */
 async function traceURL(props) {
-  const traceLimit = 10;
+  const traceLimit = 20;
   let totalTracesDone = 0;
   let traceResults = [];
 
@@ -60,7 +60,7 @@ async function traceURL(props) {
 
     // bail early
     if (error) {
-      return traceResults;
+      throw new Error(error);
     }
 
     // store result of trace
@@ -106,9 +106,7 @@ async function trace(linkURL, userAgent) {
       throw new Error("status above 400");
     }
 
-    if (status === 302 || status === 301) {
-      nextUrl = headers.get("location");
-    }
+    nextUrl = headers.get("location") || null;
 
     return {
       status,
