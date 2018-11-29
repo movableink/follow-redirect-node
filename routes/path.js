@@ -76,6 +76,10 @@ async function traceURL(props) {
       return await _traceURL({ linkURL: nextUrl, imageURL, userAgent });
     }
 
+    if(totalTracesDone >= traceLimit){
+      throw new Error('This link has been redirected 20 times. This site may be treating the SE Link Tracer as a bot and cannot be used to trouble shoot this link.');
+    }
+
     return traceResults;
   }
 
