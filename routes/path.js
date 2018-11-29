@@ -77,7 +77,7 @@ async function traceURL(props) {
     }
 
     if(totalTracesDone >= traceLimit){
-      throw new Error('This link has been redirected 20 times. This site is treating the SE Link Tracer as a bot and cannot be used to trouble shoot this link.')
+      throw new Error('This link has been redirected 20 times. This site is treating the SE Link Tracer as a bot and cannot be used to trouble shoot this link.');
     }
 
     return traceResults;
