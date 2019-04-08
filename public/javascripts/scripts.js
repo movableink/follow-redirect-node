@@ -112,17 +112,31 @@ function splitParam(url){
 */
 function compareObjects(url, image){
 
-  var globalIgnoreParam = ["utm_source", "utm_medium", "utm_term",
-                           "utm_content", "utm_id", "utm_campaign", "gclid",
-                           "om_rid", "om_mid", "om_lid", "cellid", "ECID",
-                           "mi_link_position", "mi_cachebuster"];
+  // var globalIgnoreParam = ["utm_source", "utm_medium", "utm_term",
+  //                          "utm_content", "utm_id", "utm_campaign", "gclid",
+  //                          "om_rid", "om_mid", "om_lid", "cellid", "ECID",
+  //                          "mi_link_position", "mi_cachebuster"];
 
-  $.each(url, (i, v) =>{
+  // $.each(url, (i, v) => {
 
-    if(globalIgnoreParam.indexOf(i) < 0 && (!image.hasOwnProperty(i) || image[i]['value'] !== url[i]['value'])){
-      url[i]['red'] = true;
-    } else{
-      url[i]['red'] = false;
+  //   if(globalIgnoreParam.indexOf(i) < 0 && (!image.hasOwnProperty(i) || image[i]['value'] !== url[i]['value'])){
+  //     url[i]['red'] = true;
+  //   } else{
+  //     url[i]['red'] = false;
+  //   }
+
+  // });
+
+  var urlKeys = getParamOrder(url);
+  var imageKeys = getParamOrder(image);
+
+  urlKeys.forEach( (key, index) => {
+    
+    // check to see if params are in the same order & if params have the same value
+    if( urlKeys[index] !== imageKeys[index] && url[key] !== image[key]){
+      url[key]['red'] = true;
+    }else{
+      url[key]['red'] = false;
     }
 
   });
@@ -137,7 +151,7 @@ function compareObjects(url, image){
 function buildParams(object){
 
   var html = '';
-  $.each(object, (i, v) =>{
+  $.each(object, (i, v) => {
 
     if(!v.hasOwnProperty('red')){
       html += '<div>' + i + '=' + v.value + '</div>';
@@ -150,5 +164,25 @@ function buildParams(object){
   });
 
   return html;
+
+}
+
+/**
+ * Splits the objects by keys and stores them in an Array that way we can determine the order
+ * Dynamic links are order based
+ *
+ * @param      {Object} Contains object of key and values from the QS
+ * 
+ * @return     {Array} Keys excluding the ignored params in order so we can match
+ */
+function getParamOrder(object){
+
+  var globalIgnoreParam = ["utm_source", "utm_medium", "utm_term",
+                           "utm_content", "utm_id", "utm_campaign", "gclid",
+                           "om_rid", "om_mid", "om_lid", "cellid", "ECID",
+                           "mi_link_position", "mi_cachebuster"];
+  
+  var keys = Object.keys(object).filter( key => globalIgnoreParam.indexOf(key) < 0);
+  return keys;
 
 }
